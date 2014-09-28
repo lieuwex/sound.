@@ -26,6 +26,10 @@
 					var url = track.artwork_url.substring(0, track.artwork_url.length - 18) + "-t500x500.jpg";
 					$("body").css( { backgroundImage: "url(" + url + ")" } );
 				}
+				else if(track.user != null && track.user.avatar_url != null) {
+					var url = track.user.avatar_url.substring(0, track.user.avatar_url.length - 18) + "-t500x500.jpg";
+					$("body").css( { backgroundImage: "url(" + url + ")" } );
+				}
 
 				console.log(track);
 				$("#name").text(track.title);
@@ -34,6 +38,7 @@
 				document.title = track.title;
 
 				SC.stream("/tracks/" + track.id, function(sound){
+					$(".info div:first-child").css({ position: "fixed" });
 					setInterval(function() {
 						var seconds = sound.position / 1000;
 						var minutes = Math.floor(seconds / 60);
@@ -48,11 +53,11 @@
 						if(event.keyCode === 32) {
 							if (sound.paused) {
 								sound.resume();
-								$(".playerState").animate({ opacity: 0 }, 250);
+								$(".playerState").stop().animate({ opacity: 0 }, 250);
 							}
 							else {
 								sound.pause();
-								$(".playerState").animate({ opacity: 1 }, 250);
+								$(".playerState").stop().animate({ opacity: 1 }, 250);
 							}
 						}
 					});
@@ -81,8 +86,8 @@
         	div.cover {
         		position: absolute;
         		bottom: 0;
-        		left: -20px;
-        		right: -20px;
+        		left: -40px;
+        		right: -40px;
         		/*height: 40vh;*/
         		height: 125px;
 
@@ -107,6 +112,9 @@
         		z-index: 100;
         		font-weight: 100;
         	}
+        	span {
+        		white-space: nowrap;
+        	}
         	#artist {
         		font-weight: 300;
         		text-transform: uppercase;
@@ -114,7 +122,7 @@
 
         	div.playerState {
         		position: fixed;
-        		top: 10vh;
+        		top: calc(50vh - 200px);
         		left: 0;
         		right: 0;
 

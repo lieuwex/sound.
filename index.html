@@ -23,7 +23,7 @@
 					return;
 				}
 				if(track.artwork_url != null) {	
-					var url = track.artwork_url.substring(0, track.artwork_url.length - 18) + "-t500x500.jpg";
+					var url = track.artwork_url.substring(0, track.artwork_url.length - 10) + "-t500x500.jpg";
 					$("body").css( { backgroundImage: "url(" + url + ")" } );
 				}
 				else if(track.user != null && track.user.avatar_url != null) {

@@ -11,52 +11,54 @@
 				client_id: '2b291b6cd2908bdd3925c98681c0aa7c',
 			});
 
-			var url = "http://soundcloud.com/aleksander-vinter/savants-waffle-mix";
-			if(window.location.hash) {
-				url = "http://soundcloud.com/" + window.location.hash.substring(1);
+			var url = 'http://soundcloud.com/aleksander-vinter/savants-waffle-mix';
+			if (window.location.hash) {
+				url = 'http://soundcloud.com/' + window.location.hash.substring(1);
 			}
 
 			SC.get('/resolve', { url: url }, function(track) {
-				if(track == null || track.kind !== "track") {
-					$("#artist").text("Song not found.");
+				if (track == null || track.kind !== 'track') {
+					$('#artist').text('Song not found.');
 					return;
 				}
-				if(track.artwork_url != null) {	
-					var url = track.artwork_url.substring(0, track.artwork_url.length - 10) + "-t500x500.jpg";
-					$("body").css( { backgroundImage: "url(" + url + ")" } );
+				if (track.artwork_url != null) {
+					var url = track.artwork_url.substring(0, track.artwork_url.length - 10) + '-t500x500.jpg';
+					$('body').css( { backgroundImage: 'url(' + url + ')' } );
 				}
-				else if(track.user != null && track.user.avatar_url != null) {
-					var url = track.user.avatar_url.substring(0, track.user.avatar_url.length - 10) + "-t500x500.jpg";
-					$("body").css( { backgroundImage: "url(" + url + ")" } );
+				else if (track.user != null && track.user.avatar_url != null) {
+					var url = track.user.avatar_url.substring(0, track.user.avatar_url.length - 10) + '-t500x500.jpg';
+					$('body').css( { backgroundImage: 'url(' + url + ')' } );
 				}
 
 				console.log(track);
-				$("#name").text(track.title);
-				$("#artist").text(track.user.username);
+				$('#name').text(track.title);
+				$('#artist').text(track.user.username);
+				document.title = 'sound.' + track.title;
 
-				document.title = track.title;
+				SC.stream('/tracks/' + track.id, function(sound){
+					$('.info div:first-child').css({ position: 'fixed' });
 
-				SC.stream("/tracks/" + track.id, function(sound){
-					$(".info div:first-child").css({ position: "fixed" });
-					setInterval(function() {
+					function addZero(original) {
+						return (original < 10) ? '0' + original : original;
+					}
+
+					setInterval(function () {
 						var seconds = sound.position / 1000;
 						var minutes = Math.floor(seconds / 60);
 						seconds = Math.floor(seconds % 60);
 
-						function addZero(original) { return (original < 10) ? "0" + original : original; }
-
-						$("#time").text(addZero(minutes) + ":" + addZero(seconds));
+						$('#time').text(addZero(minutes) + ':' + addZero(seconds));
 					}, 100);
 					console.log(sound);
-					$("body").keydown(function (event) {
+					$('body').keydown(function (event) {
 						if(event.keyCode === 32) {
 							if (sound.paused) {
 								sound.resume();
-								$(".playerState").stop().animate({ opacity: 0 }, 250);
+								$('.playerState').stop().animate({ opacity: 0 }, 250);
 							}
 							else {
 								sound.pause();
-								$(".playerState").stop().animate({ opacity: 1 }, 250);
+								$('.playerState').stop().animate({ opacity: 1 }, 250);
 							}
 						}
 					});
